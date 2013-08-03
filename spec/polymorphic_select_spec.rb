@@ -1,16 +1,36 @@
 require 'pp'
 require 'spec_helper'
-#require 'app/helpers/datepicker_helper'
-#require 'app/helpers/form_helper'
-#require 'date'
-=begin
-ActionView::Base.send(:include, JqueryDatepicker::DatepickerHelper)
-ActionView::Helpers::FormBuilder.send(:include,JqueryDatepicker::FormBuilder)
-=end
+require 'app/helpers/polymorphic_select_helper'
+require 'app/helpers/form_helper'
+
+ActionView::Base.send(:include, PolymorphicSelect::PolymorphicSelectHelper)
+ActionView::Helpers::FormBuilder.send(:include, PolymorphicSelect::FormBuilder)
+
 current_value = Time.now.utc
 current_value_date = current_value.to_date
 
 describe PolymorphicSelect do
+  it "should return true" do
+    true.should eq(true)
+  end
+
+  describe PolymorphicSelect::PolymorphicSelectHelper, :type => :view do
+    let(:valid_response_input) do
+      "<input id=\"foo_att1\" name=\"foo[att1]\" size=\"30\" type=\"text\" />"
+    end
+
+    let(:polymorphic_select_input_template) do
+      <<-EOTEMPLATE
+        <%= polymorphic_select_input(:foo, :att1) %>
+      EOTEMPLATE
+    end
+
+    it "should return a valid code when calling from the helper" do
+      render :inline => polymorphic_select_input_template
+      rendered.strip.should == valid_response_input
+    end    
+  end
+
 =begin
    let :valid_nested_response_input do
       "<input id=\"foo_var_att1\" name=\"foo[var][att1]\" size=\"30\" type=\"text\" />"
@@ -37,9 +57,6 @@ describe PolymorphicSelect do
     end
 =end
 
-  it "should return true" do
-    true.should eq(true)
-  end
 
 =begin
   describe JqueryDatepicker::DatepickerHelper, :type => :view do
@@ -269,28 +286,6 @@ EOTEMPLATE
       rendered.should include(valid_nested_response_javascript)
     end
 
-  end
-
-  describe JqueryDatepicker::InstanceTag do
-    it "should return a valid format when translating yy-mm-dd" do
-      input_tag = JqueryDatepicker::InstanceTag.new("test", "method", "aux")
-      input_tag.translate_format("yy-mm-dd").should eq("%Y-%m-%d")
-    end
-
-    it "should return a valid format when translating mm-dd-yy" do
-      input_tag = JqueryDatepicker::InstanceTag.new("test", "method", "aux")
-      input_tag.translate_format("mm-dd-yy").should eq("%m-%d-%Y")
-    end
-
-    it "should return a valid format when translating m-d-y" do
-      input_tag = JqueryDatepicker::InstanceTag.new("test", "method", "aux")
-      input_tag.translate_format("m-d-y").should eq("%-m-%-d-%y")
-    end
-
-    it "should return a valid format when translating yy/m-dd" do
-      input_tag = JqueryDatepicker::InstanceTag.new("test", "method", "aux")
-      input_tag.translate_format("yy/m-dd").should eq("%Y/%-m-%d")
-    end
   end
 =end
 end
