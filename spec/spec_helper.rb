@@ -20,16 +20,12 @@ class Boy
   extend ActiveModel::Naming
   include ActiveModel::Conversion
 
-  def persisted?
-    false
-  end
-
   def id
-    return Random.new.rand(1000)
+    return 5
   end
 
   def name
-    return "Boy #{Random.new.rand(1000)}"
+    return "Dick"
   end
 end
 
@@ -37,16 +33,12 @@ class Girl
   extend ActiveModel::Naming
   include ActiveModel::Conversion
 
-  def persisted?
-    false
-  end
-
   def id
-    return Random.new.rand(1000)
+    return 6
   end
 
   def name
-    return "Girl #{Random.new.rand(1000)}"
+    return "Jane"
   end
 end
 

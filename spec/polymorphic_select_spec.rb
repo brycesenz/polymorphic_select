@@ -15,8 +15,8 @@ describe PolymorphicSelect do
   end
 
   describe PolymorphicSelect::PolymorphicSelectHelper, :type => :view do
-    let(:valid_response_input) do
-      "<input id=\"foo_att1\" name=\"foo[att1]\" size=\"30\" type=\"text\" />"
+    let(:valid_polymorphic_select_input) do
+      "<select data-input=\"ownable_type\" id=\"foo_ownable_id\" name=\"foo[ownable_id]\"><option value=\"5\">Dick</option>\n<option value=\"6\">Jane</option></select>"
     end
 
     let(:polymorphic_select_input_template) do
@@ -27,9 +27,19 @@ describe PolymorphicSelect do
 
     it "should return a valid code when calling from the helper" do
       render :inline => polymorphic_select_input_template
-      rendered.strip.should == valid_response_input
+      rendered.strip.should == valid_polymorphic_select_input
     end    
   end
+
+=begin
+ <select id="payment_transactable_id" class="polymorphic-select" name="payment[transactable_id]" data-input="payment_transactable_type" data-class-mapper="{"1111" : "CreditCard", "9012" : "BankAccount"}"><option value="1">
+      1111
+    </option><option value="1">
+      9012
+    </option></select> 
+<input id="payment_transactable_type" type="hidden" value="CreditCard" name="payment[transactable_type]"></input>
+=end
+
 
 =begin
    let :valid_nested_response_input do
