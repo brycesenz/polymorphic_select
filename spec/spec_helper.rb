@@ -15,13 +15,52 @@ RSpec.configure do |c|
 end
 
 
-# Class used in the tests to mock a model
+# Classes used in the tests to mock a model
+class Boy
+  extend ActiveModel::Naming
+  include ActiveModel::Conversion
+
+  def persisted?
+    false
+  end
+
+  def id
+    return Random.new.rand(1000)
+  end
+
+  def name
+    return "Boy #{Random.new.rand(1000)}"
+  end
+end
+
+class Girl
+  extend ActiveModel::Naming
+  include ActiveModel::Conversion
+
+  def persisted?
+    false
+  end
+
+  def id
+    return Random.new.rand(1000)
+  end
+
+  def name
+    return "Girl #{Random.new.rand(1000)}"
+  end
+end
+
 class Foo
   extend ActiveModel::Naming
   include ActiveModel::Conversion
 
   def persisted?
     false
+  end
+
+  # Mocking an attribute
+  def ownable
+
   end
 
   # Mocking an attribute

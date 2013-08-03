@@ -21,7 +21,7 @@ describe PolymorphicSelect do
 
     let(:polymorphic_select_input_template) do
       <<-EOTEMPLATE
-        <%= polymorphic_select_input(:foo, :att1) %>
+        <%= polymorphic_select_input(:foo, :ownable, [Boy.new, Girl.new], :id, :name) %>
       EOTEMPLATE
     end
 
