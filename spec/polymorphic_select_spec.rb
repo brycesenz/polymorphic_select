@@ -16,7 +16,9 @@ describe PolymorphicSelect do
 
   describe PolymorphicSelect::PolymorphicSelectHelper, :type => :view do
     let(:valid_polymorphic_select_input) do
-      "<select data-input=\"ownable_type\" id=\"foo_ownable_id\" name=\"foo[ownable_id]\"><option value=\"5\">Dick</option>\n<option value=\"6\">Jane</option></select>"
+      "<select data-class-map=\"{&quot;5&quot; : &quot;Dick&quot;, &quot;6&quot; : &quot;Jane&quot;}\" data-input=\"ownable_type\" id=\"foo_ownable_id\" name=\"foo[ownable_id]\">" +
+      "<option value=\"5\">Dick</option>" +
+      "\n<option value=\"6\">Jane</option></select>"
     end
 
     let(:polymorphic_select_input_template) do
@@ -39,6 +41,58 @@ describe PolymorphicSelect do
     </option></select> 
 <input id="payment_transactable_type" type="hidden" value="CreditCard" name="payment[transactable_type]"></input>
 =end
+
+  describe PolymorphicSelect::FormHelper, :type => :view do
+    let(:foo) do
+      Foo.new
+    end
+
+    let(:polymorphic_select_form_template) do
+      <<-EOTEMPLATE
+        <%= form_for(foo, :url => "fake") do |f| %>
+          <%= f.polymorphic_select_input(:foo, :ownable, [Boy.new, Girl.new], :id, :name) %>
+        <% end %>
+      EOTEMPLATE
+    end
+
+    let :datetimepicker_form_template do
+        <<-EOTEMPLATE
+<%= form_for(foo, :url => "fake") do |f| %>
+<%= f.datetime_picker(:att1) %>
+<% end %>
+EOTEMPLATE
+    end
+
+    let :datepicker_nested_form_template do
+        <<-EOTEMPLATE
+<%= form_for(foo, :url => "fake") do |f| %>
+<%= f.fields_for :var do |f2| %>
+<%= f2.datepicker(:att1) %>
+<% end %>
+<% end %>
+EOTEMPLATE
+    end
+
+
+
+    it "should return a valid response when calling inside a form_for" do
+      render :inline => datepicker_form_template , :locals => {:foo => foo}
+      rendered.should include(valid_response_input)
+      rendered.should include(valid_response_javascript)
+    end
+
+    it "should return a valid datetime response when calling inside a form_for" do
+      render :inline => datetimepicker_form_template , :locals => {:foo => foo}
+      rendered.should include(valid_response_input)
+      rendered.should include(valid_response_javascript_datetime)
+    end
+
+    it "should return a valid response when calling inside a nested form_form" do
+      render :inline => datepicker_nested_form_template,:locals => {:foo => foo}
+      rendered.should include(valid_nested_response_input)
+      rendered.should include(valid_nested_response_javascript)
+    end
+  end
 
 
 =begin
